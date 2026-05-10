@@ -211,7 +211,17 @@ async function mountCardPaymentBrick() {
         },
         customization: {
           visual: {
-            style: { theme: 'default' },
+            style: {
+              theme: 'custom',
+        customization: {
+          visual: {
+            style: {
+              theme: 'custom',
+              customVariables: {
+                'base-color': '#000000',
+                'button-text-color': '#ffffff'
+              }
+            },
           },
           paymentMethods: {
             creditCard: 'all',
