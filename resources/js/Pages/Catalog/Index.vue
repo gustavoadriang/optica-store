@@ -12,7 +12,7 @@ const props = defineProps({
 })
 
 function changePage(page) {
-  router.get(route('catalog.view'), { page }, { preserveState: true, preserveScroll: false })
+  router.get(route('catalog.view'), { page, sort: filters.sort }, { preserveState: true, preserveScroll: false })
 }
 
 function changeSort(event) {
