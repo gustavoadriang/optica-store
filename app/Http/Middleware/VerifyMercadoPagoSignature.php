@@ -7,6 +7,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Log;
 
 class VerifyMercadoPagoSignature
 {
@@ -41,9 +42,11 @@ class VerifyMercadoPagoSignature
         $ts = $parts['ts'];
         $receivedHash = $parts['v1'];
 
+        // Validate timestamp freshness to prevent replay attacks
+        $this->validateTimestamp($ts);
+
         // Extract data.id from raw query string (PHP converts dots to underscores)
         $dataId = $this->extractDataId($request);
-
         // Extract x-request-id header (required for Orders API)
         $requestId = $request->header('x-request-id', '');
 
@@ -71,5 +74,35 @@ class VerifyMercadoPagoSignature
         parse_str(str_replace('.', '_', $rawQuery), $params);
 
         return (string) ($params['data_id'] ?? '');
+    }
+
+    /**
+     * Validate that the timestamp is within the allowed window.
+     *
+     * @param  string  $ts  Timestamp from the x-signature header
+     */
+    private function validateTimestamp(string $ts): void
+    {
+        // Ensure the timestamp is numeric
+        if (!ctype_digit($ts)) {
+            abort(400, 'Invalid timestamp in x-signature.');
+        }
+
+        $tsInt = (int) $ts;
+        $now = time();
+
+        // Get the allowed window from environment, default to 5 minutes (300 seconds)
+        $window = config('services.mercadopago.webhook_timestamp_window', 300);
+
+        // Check if the timestamp is within the window (allowing for slight clock skew)
+        if (abs($now - $tsInt) > $window) {
+            Log::warning('Rejected MercadoPago webhook due to timestamp outside allowed window', [
+                'timestamp' => $tsInt,
+                'current_time' => $now,
+                'window' => $window,
+                'difference' => abs($now - $tsInt),
+            ]);
+            abort(400, 'Webhook timestamp is too old or too new.');
+        }
     }
 }
