@@ -66,7 +66,7 @@ function closeMobileMenu() {
   <header class="w-full bg-black text-white sticky top-0 z-[60]">
     <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
 
-      <!-- Desktop: search | logo | cart -->
+      <!-- Desktop: search | wordmark | cart -->
       <div class="hidden lg:grid grid-cols-3 items-center py-4">
         <!-- Search pill -->
         <form action="/search" method="GET">
@@ -85,11 +85,9 @@ function closeMobileMenu() {
           </div>
         </form>
 
-        <!-- Logo centrado -->
-        <div class="flex justify-center">
-          <a href="/" class="block hover:opacity-80 transition">
-            <img :src="'/images/logo.webp'" alt="Óptica Guzmán" class="h-14 w-auto">
-          </a>
+        <!-- Wordmark centrado -->
+        <div class="flex justify-center py-3">
+          <a href="/" class="block text-white font-bold tracking-widest text-3xl leading-none hover:opacity-80 transition">Orquesta</a>
         </div>
 
         <!-- Cart -->
@@ -119,7 +117,7 @@ function closeMobileMenu() {
         </a>
       </nav>
 
-      <!-- Mobile: hamburger | logo | search + cart -->
+      <!-- Mobile: hamburger | wordmark | search + cart -->
       <div class="lg:hidden grid grid-cols-3 items-center py-2">
         <!-- Left: Hamburger -->
         <div class="flex">
@@ -134,11 +132,9 @@ function closeMobileMenu() {
           </button>
         </div>
 
-        <!-- Center: Logo -->
-        <div class="flex justify-center">
-          <a href="/" class="block hover:opacity-80 transition">
-            <img :src="'/images/logo.webp'" alt="Óptica Guzmán" class="h-14 w-auto">
-          </a>
+        <!-- Center: Wordmark -->
+        <div class="flex justify-center py-4">
+          <a href="/" class="block text-white font-bold tracking-widest text-2xl leading-none hover:opacity-80 transition">Orquesta</a>
         </div>
 
         <!-- Right: Cart -->
