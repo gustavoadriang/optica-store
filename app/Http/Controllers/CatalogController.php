@@ -62,9 +62,20 @@ class CatalogController extends Controller
 
     public function __invoke(Request $request): Response
     {
-        $paginator = Product::browsable()
-            ->with(['variants.basePrices', 'variants.values', 'defaultUrl', 'thumbnail'])
-            ->paginate(12);
+        $query = Product::browsable()
+            ->with(['variants.basePrices', 'variants.values', 'defaultUrl', 'thumbnail']);
+        $sort = $request->input('sort', 'newest');
+
+        if ($sort === 'price_asc') {
+            $query->withMin('variants', 'price')->orderBy('variants_min_price', 'asc');
+        } elseif ($sort === 'price_desc') {
+            $query->withMin('variants', 'price')->orderBy('variants_min_price', 'desc');
+        } else {
+            // newest: order by created_at desc
+            $query->orderByDesc('created_at');
+        }
+
+        $paginator = $query->paginate(12);
 
         $products = $paginator->getCollection()
             ->map(fn (Product $product) => $this->serializeProduct($product))
